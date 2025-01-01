@@ -3,8 +3,8 @@ using UnityEngine;
 public class TirAvecViseur : MonoBehaviour
 {
     public float distanceRaycast = 100f; // Distance maximale du raycast
-    private Camera cameraPrincipale;    // Caméra utilisée pour viser
-    private int score = 0;              // Score du joueur
+    private Camera cameraPrincipale;     // Caméra utilisée pour viser
+    private int score = 0;               // Score du joueur
 
     private void Start()
     {

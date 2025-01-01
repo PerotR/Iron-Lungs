@@ -3,7 +3,6 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public float sensibilitéSouris = 5f;   // Sensibilité du suivi avec la souris
-    public float sensibilitéClavier = 2f; // Sensibilité de la rotation avec les touches fléchées
     public float rotationLimiteVerticale = 60f; // Limitation de la rotation verticale
 
     private float rotationX = 0f; // Rotation horizontale (autour de l'axe Y)
@@ -32,24 +31,6 @@ public class CameraController : MonoBehaviour
 
         // Limiter la rotation verticale pour éviter les inversions
         rotationY = Mathf.Clamp(rotationY, -rotationLimiteVerticale, rotationLimiteVerticale);
-
-        // --- Contrôle via les touches fléchées ---
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            rotationY -= sensibilitéClavier;
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            rotationY += sensibilitéClavier;
-        }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            rotationX -= sensibilitéClavier;
-        }
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            rotationX += sensibilitéClavier;
-        }
 
         // Appliquer les rotations calculées à la caméra
         transform.eulerAngles = new Vector3(rotationY, rotationX, 0);
