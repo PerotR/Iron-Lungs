@@ -61,20 +61,22 @@ public class TirAvecViseur : MonoBehaviour
             Debug.Log("Objet touché : " + hit.collider.name);
 
             // Vérifier si l'objet touché est une cible
-            if (hit.collider.CompareTag("Target"))
+            GameObject hitObject = hit.collider.transform.root.gameObject; // Récupérer l'objet parent
+
+            if (hitObject.CompareTag("Target"))
             {
-                Destroy(hit.collider.gameObject); // Détruire la cible
+                Destroy(hitObject); // Détruire l'objet parent
                 score++; // Augmenter le score de 1
                 Debug.Log("Cible détruite ! Score : " + score);
             }
-            else if (hit.collider.CompareTag("Civilian"))
+            else if (hitObject.CompareTag("Civilian"))
             {
-                Destroy(hit.collider.gameObject); // Détruire le civil
-                Debug.Log("Civilian tué ! Aucun point ajouté.");
+                Destroy(hitObject); // Détruire l'objet parent
+                Debug.Log("Civilian détruit !"); // Message de détruire un civil
             }
             else
             {
-                Debug.Log("L'objet touché n'est ni une cible ni un civil.");
+                Debug.Log("L'objet touché n'est ni une Target ni un Civilian.");
             }
         }
         else
@@ -82,4 +84,5 @@ public class TirAvecViseur : MonoBehaviour
             Debug.Log("Aucune cible touchée.");
         }
     }
+
 }

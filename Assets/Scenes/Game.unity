@@ -211,7 +211,7 @@ Transform:
   m_GameObject: {fileID: 98955319}
   serializedVersion: 2
   m_LocalRotation: {x: 0.174465, y: -0, z: -0, w: 0.9846634}
-  m_LocalPosition: {x: 0, y: 15.41, z: 9.63}
+  m_LocalPosition: {x: 0, y: 27.5, z: 12.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -288,7 +288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 278a28f45f8bb504b876756f532e5cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanceRaycast: 300
+  distanceRaycast: 400
 --- !u!1 &150281447
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,12 +648,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee576f7126b05e941be8c1e4fed397f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPrefab: {fileID: 772039755345336133, guid: 09292f79e7ea156459c30781ee8b9b6c,
+  targetPrefab: {fileID: 8387372776133497661, guid: 92b4f45728c0a3b418384892861f015e,
     type: 3}
-  civilianPrefab: {fileID: 772039755345336133, guid: cd57fdbe9f5294aada902c409f9881ba,
+  civilianPrefab: {fileID: 8387372776133497661, guid: 24e887960b7812f469e9c0560a589c7e,
     type: 3}
   arenaTransform: {fileID: 150281451}
-  spawnHeight: 7
+  spawnHeight: 2
   numberOfEntities: 100
 --- !u!4 &330628848
 Transform:
@@ -1593,8 +1593,8 @@ Transform:
   m_GameObject: {fileID: 1199739137}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 20, z: 10}
+  m_LocalPosition: {x: 0, y: -0.33249, z: 0}
+  m_LocalScale: {x: 10, y: 33.3, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 405360716}

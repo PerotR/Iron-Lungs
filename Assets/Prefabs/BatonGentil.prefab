@@ -544,6 +544,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8774769717228504763}
+  - component: {fileID: -6893481276021036718}
   m_Layer: 0
   m_Name: BatonGentil
   m_TagString: Civilian
@@ -572,6 +573,21 @@ Transform:
   - {fileID: 7061133863181337886}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6893481276021036718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8387372776133497661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14196f6951fa8e1499193e85b21121f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 2
+  movementDirection: {x: 0, y: 0, z: 0}
+  movementRange: 5
 --- !u!1 &8504099252877522224
 GameObject:
   m_ObjectHideFlags: 0
