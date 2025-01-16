@@ -2,65 +2,101 @@ using UnityEngine;
 
 public class TargetSpawner : MonoBehaviour
 {
-    public Camera mainCamera;         // Référence à la caméra principale
-    public GameObject targetPrefab;   // Le prefab de la cible (cylindre)
-    public float minDistance = 10f;   // Distance minimale entre la caméra et la cible
-    public float maxDistance = 50f;   // Distance maximale entre la caméra et la cible
-    public float spawnHeight = 1.5f;  // Hauteur au-dessus du sol où les cibles apparaissent (environ hauteur humaine)
-    public float spawnInterval = 0.5f;  // Réduit l'intervalle de temps entre chaque apparition de cible (0.5 seconde)
+    public GameObject targetPrefab;   // Prefab pour les cibles (type "Target")
+    public GameObject civilianPrefab; // Prefab pour les civils (type "Civilian")
+    public Transform arenaTransform; // Transform de l'arène
+    public float spawnHeight = 1.5f; // Hauteur où les cibles apparaissent
+    public int numberOfEntities = 100; // Nombre total d'entités à générer
 
-    // Limites de la zone où les cibles peuvent apparaître (hors du demi-carré)
-    public float barrierXMin = -25f; // Limite de la barrière du côté gauche
-    public float barrierXMax = 25f;  // Limite de la barrière du côté droit
+    private float radiusX;           // Rayon dynamique de l'arène sur l'axe X
+    private float radiusZ;           // Rayon dynamique de l'arène sur l'axe Z
+    private float entityRadius;      // Rayon des entités (taille pour éviter les débordements)
 
     private void Start()
     {
-        // Démarre la fonction pour générer les cibles de manière continue
-        InvokeRepeating("SpawnTarget", 0f, spawnInterval);
+        // Calculer les dimensions dynamiques
+        CalculateArenaDimensions(out radiusX, out radiusZ);
+
+        // Calculer la taille des entités
+        CalculateEntityRadius();
+
+        // Réduire les rayons de l'arène pour prendre en compte la taille des entités
+        radiusX -= entityRadius;
+        radiusZ -= entityRadius;
+
+        // Générer les entités
+        SpawnEntities();
     }
 
-    void SpawnTarget()
+    void SpawnEntities()
     {
-        // Générer une position aléatoire dans la vue de la caméra
-        Vector3 targetPosition = GetRandomPositionInCameraView();
+        // Centre de l'arène
+        Vector3 arenaCenter = arenaTransform.position;
 
-        // Ajuster la hauteur de la cible
-        targetPosition.y = spawnHeight;
-
-        // Vérifier si la cible est dans une position valide (Z positif et hors de la zone des barrières)
-        if (IsValidTargetPosition(targetPosition))
+        for (int i = 0; i < numberOfEntities; i++)
         {
-            // Créer la cible à la position générée
-            Instantiate(targetPrefab, targetPosition, Quaternion.identity);
+            // Déterminer si on spawn une cible ou un civil (90% Civilian, 10% Target)
+            GameObject prefabToSpawn = Random.value < 0.9f ? civilianPrefab : targetPrefab;
+
+            // Obtenir une position aléatoire dans l'ellipse
+            Vector3 entityPosition = GetRandomPositionInEllipse(arenaCenter, radiusX, radiusZ, spawnHeight);
+
+            // Créer l'entité
+            GameObject entity = Instantiate(prefabToSpawn, entityPosition, Quaternion.identity);
+
+            // Assigner le tag en fonction du type d'entité
+            entity.tag = prefabToSpawn == civilianPrefab ? "Civilian" : "Target";
         }
     }
 
-    Vector3 GetRandomPositionInCameraView()
+    void CalculateArenaDimensions(out float radiusX, out float radiusZ)
     {
-        // Générer des valeurs aléatoires pour la position
-        float randomX = Random.Range(-2f, 2f); // X aléatoire entre -0.5 et 0.5
-        float randomY = Random.Range(-0.5f, 0.5f); // Y aléatoire entre -0.5 et 0.5
-        float randomZ = Random.Range(minDistance, maxDistance); // Z aléatoire entre minDistance et maxDistance
+        // Obtenir le collider de l'arène
+        Collider arenaCollider = arenaTransform.GetComponent<Collider>();
+        if (arenaCollider == null)
+        {
+            Debug.LogError("Arena object is missing a Collider component!");
+            radiusX = radiusZ = 0f;
+            return;
+        }
 
-        // Convertir ces valeurs en coordonnées mondiales (dans la vue de la caméra)
-        Vector3 randomPosition = mainCamera.ViewportToWorldPoint(new Vector3(randomX + 0.5f, randomY + 0.5f, randomZ));
-        return randomPosition;
+        // Obtenir les dimensions du collider (Bounds)
+        Bounds bounds = arenaCollider.bounds;
+
+        // Calculer les rayons sur X et Z
+        radiusX = bounds.size.x / 2f;
+        radiusZ = bounds.size.z / 2f;
     }
 
-    bool IsValidTargetPosition(Vector3 targetPosition)
+    void CalculateEntityRadius()
     {
-        // Vérifier si Z est positif
-        if (targetPosition.z <= 0)
+        // Obtenir le collider de l'une des entités (targetPrefab ou civilianPrefab)
+        Collider entityCollider = targetPrefab.GetComponent<Collider>();
+        if (entityCollider == null)
         {
-            return false;
+            Debug.LogError("Target prefab is missing a Collider component!");
+            entityRadius = 0f;
+            return;
         }
 
-        // Vérifier si la cible se trouve dans la zone des barrières
-        if (targetPosition.x >= barrierXMin && targetPosition.x <= barrierXMax)
-        {
-            return false;
-        }
+        // Calculer le rayon approximatif de l'entité (plus grande dimension)
+        Bounds bounds = entityCollider.bounds;
+        entityRadius = Mathf.Max(bounds.size.x, bounds.size.z) / 2f;
+    }
 
-        return true;
+    Vector3 GetRandomPositionInEllipse(Vector3 arenaCenter, float radiusX, float radiusZ, float height)
+    {
+        // Générer un angle aléatoire
+        float angle = Random.Range(0f, 2f * Mathf.PI);
+
+        // Générer une distance aléatoire (distribution uniforme)
+        float distance = Mathf.Sqrt(Random.Range(0f, 1f));
+
+        // Calculer les coordonnées dans l'ellipse
+        float x = distance * radiusX * Mathf.Cos(angle);
+        float z = distance * radiusZ * Mathf.Sin(angle);
+
+        // Retourner la position finale
+        return new Vector3(arenaCenter.x + x, height, arenaCenter.z + z);
     }
 }

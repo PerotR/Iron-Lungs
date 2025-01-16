@@ -61,15 +61,20 @@ public class TirAvecViseur : MonoBehaviour
             Debug.Log("Objet touché : " + hit.collider.name);
 
             // Vérifier si l'objet touché est une cible
-            if (hit.collider.CompareTag("Cible"))
+            if (hit.collider.CompareTag("Target"))
             {
                 Destroy(hit.collider.gameObject); // Détruire la cible
                 score++; // Augmenter le score de 1
                 Debug.Log("Cible détruite ! Score : " + score);
             }
+            else if (hit.collider.CompareTag("Civilian"))
+            {
+                Destroy(hit.collider.gameObject); // Détruire le civil
+                Debug.Log("Civilian tué ! Aucun point ajouté.");
+            }
             else
             {
-                Debug.Log("L'objet touché n'est pas une cible.");
+                Debug.Log("L'objet touché n'est ni une cible ni un civil.");
             }
         }
         else
