@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Iron-Lungs.sln"
+    "dotnet.defaultSolution": "Iron Lungs.sln"
 }
