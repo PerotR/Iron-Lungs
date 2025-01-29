@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TirAvecViseur : MonoBehaviour
 {
     public float distanceRaycast = 100f; // Distance maximale du raycast
     private Camera cameraPrincipale;     // Caméra utilisée pour viser
     private int score = 0;               // Score du joueur
+    private int civilianHits = 0;        // Nombre de civils touchés
+    public int maxCivilianHits = 3; // Nombre maximum de civils touchés avant reset
 
     private void Start()
     {
@@ -72,7 +75,15 @@ public class TirAvecViseur : MonoBehaviour
             else if (hitObject.CompareTag("Civilian"))
             {
                 Destroy(hitObject); // Détruire l'objet parent
-                Debug.Log("Civilian détruit !"); // Message de détruire un civil
+                civilianHits++;
+                Debug.Log("Civilian détruit ! Total : " + civilianHits);
+                
+                // Vérifier si le nombre maximum de civils touchés est atteint
+                if (civilianHits > maxCivilianHits)
+                {
+                    Debug.Log("Trop de civils touchés ! Redémarrage du jeu...");
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                }
             }
             else
             {
@@ -84,5 +95,4 @@ public class TirAvecViseur : MonoBehaviour
             Debug.Log("Aucune cible touchée.");
         }
     }
-
 }
