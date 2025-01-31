@@ -44,22 +44,41 @@ public class TargetSpawner : MonoBehaviour
         {
             // Sélectionner une arène au hasard
             Transform selectedArena = arenaTransforms[Random.Range(0, arenaTransforms.Count)];
-            
+
             // Calculer les dimensions de l'arène
             float radiusX, radiusZ;
             CalculateArenaDimensions(selectedArena, out radiusX, out radiusZ);
 
             // Déterminer si on spawn une cible ou un civil (90% Civilian, 10% Target)
             GameObject prefabToSpawn = Random.value < 0.9f ? civilianPrefab : targetPrefab;
-            
+
             // Obtenir une position aléatoire dans l'ellipse de l'arène sélectionnée
             Vector3 entityPosition = GetRandomPositionInEllipse(selectedArena.position, radiusX, radiusZ, spawnHeight);
-            
-            // Créer l'entité
-            GameObject entity = Instantiate(prefabToSpawn, entityPosition, Quaternion.identity);
-            
-            // Assigner le tag en fonction du type d'entité
-            entity.tag = prefabToSpawn == civilianPrefab ? "Civilian" : "Target";
+
+            // Utiliser un Raycast pour s'assurer que l'entité spawn sur la surface de l'arène
+            RaycastHit hit;
+            if (Physics.Raycast(entityPosition + Vector3.up * 10f, Vector3.down, out hit, Mathf.Infinity))
+            {
+                // Assurez-vous que le Raycast touche bien une surface de l'arène
+                if (hit.collider.CompareTag("Arena"))
+                {
+                    // Créer l'entité sur la surface de l'arène
+                    GameObject entity = Instantiate(prefabToSpawn, hit.point, Quaternion.identity);
+
+                    // Assigner le tag en fonction du type d'entité
+                    entity.tag = prefabToSpawn == civilianPrefab ? "Civilian" : "Target";
+                }
+                else
+                {
+                    // Si le raycast n'a pas touché une arène, recommencer avec ce spawn
+                    i--;
+                }
+            }
+            else
+            {
+                // Si le raycast échoue, recommencer avec ce spawn
+                i--;
+            }
         }
     }
 
