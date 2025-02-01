@@ -6,14 +6,19 @@ using UnityEngine.UI;
 public class RespirationInterpreter : MonoBehaviour
 {
     public RespirationDataReader dataReader;
-    public int batchSize = 2000; 
+    public int batchSize = 2000; // Nombre de points par batch (3 secondes à 1000 Hz)
 
     private List<int> respirationData;
     private int currentIndex = 0;
     private float timer = 0f;
-    private float interval = 2f;
+    private float interval = 3f;
 
     private float currentOscillation = 0f;
+
+    private float vci;
+    private float vce;
+    private float vri;
+    private float vre;
 
     public RectTransform tracker; // Flèche ou indicateur visuel
     public RectTransform graphContainer; // Conteneur du graphique
@@ -21,18 +26,29 @@ public class RespirationInterpreter : MonoBehaviour
 
     void Start()
     {
+        if (dataReader == null)
+        {
+            Debug.LogError("Veuillez assigner un RespirationDataReader dans l'inspecteur !");
+            return;
+        }
+
+        StartCoroutine(WaitOneSecond());
+
         respirationData = dataReader.GetRespirationData();
+
+        // Récupération des données de calibration depuis RespirationDataReader
+        vci = dataReader.VCI;
+        vce = dataReader.VCE;
+        vri = dataReader.VRI;
+        vre = dataReader.VRE;
+
+        Debug.Log($"Données de calibration récupérées : VCI={vci}, VCE={vce}, VRI={vri}, VRE={vre}");
 
         if (tracker != null && graphImage != null)
         {
             // Calculer la position Y pour le bas du graphique
             float yPos = -graphImage.rectTransform.rect.height / 2f; // Placer la flèche au bas de l'image
-
-            // Positionner la flèche à l'extrémité gauche (0) et en bas de l'image
             tracker.anchoredPosition = new Vector2(0, yPos);
-
-            // Optionnel : Vérification dans la console pour s'assurer que la position est correcte
-            Debug.Log("Position initiale du tracker : " + tracker.anchoredPosition);
         }
 
         if (respirationData.Count == 0)
@@ -41,11 +57,10 @@ public class RespirationInterpreter : MonoBehaviour
         }
     }
 
-
-
-
-
-
+    IEnumerator WaitOneSecond()
+    {
+        yield return new WaitForSeconds(1f);
+    }
 
     void Update()
     {
@@ -88,19 +103,24 @@ public class RespirationInterpreter : MonoBehaviour
         tracker.anchoredPosition = new Vector2(trackerX, -graphImage.rectTransform.rect.height / 2f);
     }
 
-
     string InterpretRespirationBatch(List<int> batch)
     {
-        float moyenne = CalculateMean(batch);
-        float ecartType = CalculateStandardDeviation(batch, moyenne);
+        // Calcul des métriques
+        float amplitude = CalculateAmplitude(batch);
+        float frequency = CalculateFrequency(batch);
 
-        if (ecartType < 1)
+        // Règles de décision
+        if (amplitude < 0.1f && IsApnea(batch))
         {
             return "apnee";
         }
-        else if (ecartType > 5)
+        else if (amplitude < vci && frequency > 1.5f)
         {
             return "essoufflement";
+        }
+        else if (amplitude >= vci && amplitude <= vri && frequency <= 1.2f)
+        {
+            return "effort maîtrisé";
         }
         else
         {
@@ -108,32 +128,64 @@ public class RespirationInterpreter : MonoBehaviour
         }
     }
 
-    float CalculateMean(List<int> data)
+    // Calcul de l'amplitude (différence entre pics et creux)
+    float CalculateAmplitude(List<int> batch)
     {
-        float sum = 0;
-        foreach (int value in data)
+        int min = int.MaxValue;
+        int max = int.MinValue;
+
+        foreach (int value in batch)
         {
-            sum += value;
+            if (value < min) min = value;
+            if (value > max) max = value;
         }
-        return sum / data.Count;
+
+        return max - min;
     }
 
-    float CalculateStandardDeviation(List<int> data, float mean)
+    // Calcul de la fréquence respiratoire (nombre de cycles par seconde)
+    float CalculateFrequency(List<int> batch)
     {
-        float sum = 0;
-        foreach (int value in data)
+        int cycles = 0;
+        bool inCycle = false;
+        float threshold = (vci + vri) / 2; // Seuil moyen de la plage respiratoire
+
+        for (int i = 1; i < batch.Count; i++)
         {
-            sum += Mathf.Pow(value - mean, 2);
+            if (!inCycle && batch[i-1] < threshold && batch[i] >= threshold)
+            {
+                inCycle = true;
+            }
+            else if (inCycle && batch[i-1] >= threshold && batch[i] < threshold)
+            {
+                inCycle = false;
+                cycles++;
+            }
         }
-        return Mathf.Sqrt(sum / data.Count);
+
+        // Fréquence : nombre de cycles détectés par seconde
+        return cycles / 3.0f;
+    }
+
+    // Détection d'apnée (plateau prolongé, sans variation notable)
+    bool IsApnea(List<int> batch)
+    {
+        float threshold = 0.1f; // Seuil de variation
+        for (int i = 1; i < batch.Count; i++)
+        {
+            if (Mathf.Abs(batch[i] - batch[i-1]) > threshold)
+                return false;
+        }
+        return true;
     }
 
     float GetCameraOscillation(string respirationState)
     {
         switch (respirationState)
         {
-            case "apnee": return 0.1f;
-            case "essoufflement": return 2.0f;
+            case "apnee": return 0.0f;
+            case "essoufflement": return 2.5f;
+            case "effort maîtrisé": return 0.5f;
             case "normal": return 1.0f;
             default: return 0.0f;
         }

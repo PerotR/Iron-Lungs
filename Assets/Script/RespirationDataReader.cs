@@ -8,6 +8,16 @@ public class RespirationDataReader : MonoBehaviour
     public string filePathTo = "Assets/RespirationData/calibration_aans_respiration_longue.txt";
     private List<int> respirationData = new List<int>();
 
+    // Fichiers de calibration
+    public string calibrageVCFilePath = "Assets/RespirationData/calibrage_VC.txt";
+    public string calibrageVRFilePath = "Assets/RespirationData/calibrage_VR.txt";
+
+    // Variables de calibration
+    public float VCI=-1; // Volume courant inspiré
+    public float VCE=-1; // Volume courant expiré
+    public float VRI=-1; // Volume de réserve inspiratoire
+    public float VRE=-1; // Volume de réserve expiratoire
+
     public RawImage graphImage;
     private Texture2D texture;
     private Color graphColor = Color.green;
@@ -18,6 +28,9 @@ public class RespirationDataReader : MonoBehaviour
     void Start()
     {
         LoadRespirationData();
+
+        // Charger et traiter les fichiers de calibrage
+        LoadCalibrationData();
 
         // Ajuste la taille de la texture à celle du conteneur
         RectTransform containerRect = graphImage.GetComponent<RectTransform>();
@@ -30,7 +43,6 @@ public class RespirationDataReader : MonoBehaviour
         DrawGraph();
     }
 
-
     void LoadRespirationData()
     {
         if (File.Exists(filePathTo))
@@ -38,16 +50,15 @@ public class RespirationDataReader : MonoBehaviour
             string[] lines = File.ReadAllLines(filePathTo);
             foreach (string line in lines)
             {
-                if (!line.StartsWith("#"))
+                // Ignorer les lignes de commentaire
+                if (line.StartsWith("#")) continue;
+
+                string[] values = line.Split(new char[] { '\t', ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                // Vérification pour éviter les erreurs d'index
+                if (values.Length >= 6 && int.TryParse(values[5], out int respirationValue))
                 {
-                    string[] values = line.Split(new char[] { ' ', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
-                    if (values.Length >= 6)
-                    {
-                        if (int.TryParse(values[5], out int respirationValue))
-                        {
-                            respirationData.Add(respirationValue);
-                        }
-                    }
+                    respirationData.Add(respirationValue);
                 }
             }
             Debug.Log("Données de respiration chargées : " + respirationData.Count + " points.");
@@ -58,10 +69,87 @@ public class RespirationDataReader : MonoBehaviour
         }
     }
 
+
     public List<int> GetRespirationData()
     {
         return respirationData;
     }
+
+    void LoadCalibrationData()
+    {
+        // Charger et traiter les fichiers de calibrage VC et VR
+        LoadVCData(calibrageVCFilePath);
+        LoadVRData(calibrageVRFilePath);
+    }
+
+    void LoadVCData(string filePath)
+    {
+        List<int> vcData = new List<int>();
+
+        if (File.Exists(filePath))
+        {
+            string[] lines = File.ReadAllLines(filePath);
+            foreach (string line in lines)
+            {
+                if (!line.StartsWith("#"))
+                {
+                    string[] values = line.Split(new char[] { '\t', ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                    // Vérification pour lire la 6e colonne (index 5)
+                    if (values.Length >= 6 && int.TryParse(values[5], out int vcValue))
+                    {
+                        vcData.Add(vcValue);
+                    }
+                }
+            }
+
+            if (vcData.Count > 0)
+            {
+                VCI = Mathf.Max(vcData.ToArray()); // Volume courant inspiré
+                VCE = Mathf.Min(vcData.ToArray()); // Volume courant expiré
+                Debug.Log("Calibration VC - VCI: " + VCI + ", VCE: " + VCE);
+            }
+        }
+        else
+        {
+            Debug.LogError("Fichier de calibrage VC introuvable : " + filePath);
+        }
+    }
+
+    void LoadVRData(string filePath)
+    {
+        List<int> vrData = new List<int>();
+
+        if (File.Exists(filePath))
+        {
+            string[] lines = File.ReadAllLines(filePath);
+            foreach (string line in lines)
+            {
+                if (!line.StartsWith("#"))
+                {
+                    string[] values = line.Split(new char[] { '\t', ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                    // Lecture de la 6e colonne (index 5)
+                    if (values.Length >= 6 && int.TryParse(values[5], out int vrValue))
+                    {
+                        vrData.Add(vrValue);
+                    }
+                }
+            }
+
+            if (vrData.Count > 0)
+            {
+                VRI = Mathf.Max(vrData.ToArray()); // Volume de réserve inspiratoire
+                VRE = Mathf.Min(vrData.ToArray()); // Volume de réserve expiratoire
+                Debug.Log("Calibration VR - VRI: " + VRI + ", VRE: " + VRE);
+            }
+        }
+        else
+        {
+            Debug.LogError("Fichier de calibrage VR introuvable : " + filePath);
+        }
+    }
+
 
     void DrawGraph()
     {
@@ -103,8 +191,6 @@ public class RespirationDataReader : MonoBehaviour
         // Appliquer la texture après modification
         texture.Apply();
     }
-
-    
 
     void ClearTexture()
     {
