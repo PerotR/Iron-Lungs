@@ -5,6 +5,7 @@ public class TargetMovement : MonoBehaviour
     public float speed = 5f;               // Vitesse de déplacement
     public Vector3 movementDirection;     // Direction de déplacement
     private Rigidbody rb;
+    public float raycastDistance = 1f;   // Distance du raycast pour détecter les obstacles
 
     private void Start()
     {
@@ -15,6 +16,7 @@ public class TargetMovement : MonoBehaviour
             rb = gameObject.AddComponent<Rigidbody>();
         }
         rb.isKinematic = true; // Pour éviter la gravité et contrôler le mouvement manuellement
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // Pour éviter le tunneling
 
         // Générer une direction aléatoire pour le mouvement, uniquement dans le plan XZ
         movementDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
@@ -22,8 +24,17 @@ public class TargetMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Déplacer la cible avec le Rigidbody (en utilisant la physique)
-        rb.MovePosition(transform.position + movementDirection * speed * Time.deltaTime);
+        // Vérifier s'il y a un obstacle devant avec un Raycast
+        if (!Physics.Raycast(transform.position, movementDirection, raycastDistance))
+        {
+            // Déplacer la cible avec le Rigidbody (en utilisant la physique)
+            rb.MovePosition(transform.position + movementDirection * speed * Time.deltaTime);
+        }
+        else
+        {
+            // Changer la direction si un obstacle est détecté
+            movementDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+        }
     }
 
     // Détecte les collisions avec des objets ayant un collider
