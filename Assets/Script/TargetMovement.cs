@@ -11,6 +11,10 @@ public class TargetMovement : MonoBehaviour
     public float raycastDistance = 1f;   // Distance du raycast pour détecter les obstacles
 
     private float accelerationTimer;
+    private bool isSlowMotionActive = false;
+    private float slowMotionDuration = 3f;
+    private float slowMotionTimer = 0f;
+    private float originalSpeed;
 
     private void Start()
     {
@@ -27,12 +31,22 @@ public class TargetMovement : MonoBehaviour
         movementDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
 
         accelerationTimer = accelerationInterval;
+        originalSpeed = speed;
     }
 
     private void FixedUpdate()
     {
         // Gestion de l'accélération
         HandleAcceleration();
+
+        if (isSlowMotionActive)
+        {
+            slowMotionTimer += Time.deltaTime;
+            if (slowMotionTimer >= slowMotionDuration)
+            {
+                DeactivateSlowMotion();
+            }
+        }
 
         // Vérifier s'il y a un obstacle devant avec un Raycast
         if (!Physics.Raycast(transform.position, movementDirection, raycastDistance))
@@ -55,9 +69,23 @@ public class TargetMovement : MonoBehaviour
         {
             speed *= accelerationFactor; // Augmenter la vitesse
             accelerationTimer = accelerationInterval; // Réinitialiser le timer
-
-            //Debug.Log($"Nouvelle vitesse : {speed}");
         }
+    }
+
+    public void ActivateSlowMotion()
+    {
+        if (!isSlowMotionActive)
+        {
+            isSlowMotionActive = true;
+            slowMotionTimer = 0f;
+            speed = 1f; // Réduire la vitesse de moitié
+        }
+    }
+
+    private void DeactivateSlowMotion()
+    {
+        isSlowMotionActive = false;
+        speed = originalSpeed; // Rétablir la vitesse originale
     }
 
     // Détecte les collisions avec des objets ayant un collider

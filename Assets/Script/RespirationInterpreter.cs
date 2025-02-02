@@ -116,6 +116,7 @@ public class RespirationInterpreter : MonoBehaviour
         if (batchAmplitude < 100f && frequency < 0.2f)
         {
             Debug.Log("État de respiration : " + "apnee");
+            TriggerApneaEffect();
             return "apnee";
         }
         else if (frequency > 0.1f)
@@ -206,4 +207,14 @@ public class RespirationInterpreter : MonoBehaviour
         float offsetY = Mathf.Cos(Time.time * 2f) * oscillation;
         Camera.main.transform.localEulerAngles = currentRotation + new Vector3(offsetY, offsetX, 0);
     }
+
+    void TriggerApneaEffect()
+    {
+        var targets = FindObjectsOfType<TargetMovement>();
+        foreach (var target in targets)
+        {
+            target.ActivateSlowMotion();
+        }
+    }
+
 }
