@@ -4096,8 +4096,9 @@ MonoBehaviour:
   maxCivilianHits: 3
   size: 5
   audioSource: {fileID: 1229808104}
-  targetSound: {fileID: 8300000, guid: 7a10d807d1c70714c93b85a61e764f1e, type: 3}
-  civilianSound: {fileID: 8300000, guid: d36866ce22aca9b4c82441992ce84154, type: 3}
+  shootingSound: {fileID: 8300000, guid: 4b5f6273e132ae54b97562f32f7f134c, type: 3}
+  targetSound: {fileID: 8300000, guid: 85ea63360d5fc93479f31f0b839cecdd, type: 3}
+  civilianSound: {fileID: 8300000, guid: 91c734aca99111140a5341c38b65fea8, type: 3}
   totalTargets: 10
 --- !u!114 &1229808103
 MonoBehaviour:
