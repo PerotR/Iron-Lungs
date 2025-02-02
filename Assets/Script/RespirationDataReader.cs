@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class RespirationDataReader : MonoBehaviour
 {
-    public string filePathTo = "Assets/RespirationData/calibration_aans_respiration_longue.txt";
+    private string filePathTo = "Assets/RespirationData/run_simu.txt";
     private List<int> respirationData = new List<int>();
 
     // Fichiers de calibration
-    public string calibrageVCFilePath = "Assets/RespirationData/calibrage_VC.txt";
-    public string calibrageVRFilePath = "Assets/RespirationData/calibrage_VR.txt";
+    private string calibrageVCFilePath = "Assets/RespirationData/calibration_aans_respiration_longue.txt";
+    private string calibrageVRFilePath = "Assets/RespirationData/calibrage_vr.txt";
 
     // Variables de calibration
     public float VCI=-1; // Volume courant inspiré

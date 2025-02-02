@@ -72,7 +72,7 @@ public class RespirationInterpreter : MonoBehaviour
             {
                 List<int> batch = respirationData.GetRange(currentIndex, batchSize);
                 string respirationState = InterpretRespirationBatch(batch);
-                Debug.Log("État de respiration : " + respirationState);
+                //Debug.Log("État de respiration : " + respirationState);
 
                 currentOscillation = GetCameraOscillation(respirationState);
 
@@ -106,27 +106,35 @@ public class RespirationInterpreter : MonoBehaviour
     string InterpretRespirationBatch(List<int> batch)
     {
         // Calcul des métriques
-        float amplitude = CalculateAmplitude(batch);
+        float batchAmplitude = CalculateAmplitude(batch);
+        float referenceAmplitude = vci - vce; // Amplitude de référence normale
+
         float frequency = CalculateFrequency(batch);
+        Debug.Log($"Amplitude du batch : {batchAmplitude}, Amplitude de référence : {referenceAmplitude}, Fréquence : {frequency}");
 
         // Règles de décision
-        if (amplitude < 0.1f && IsApnea(batch))
+        if (batchAmplitude < 100f && frequency < 0.2f)
         {
+            Debug.Log("État de respiration : " + "apnee");
             return "apnee";
         }
-        else if (amplitude < vci && frequency > 1.5f)
+        else if (batchAmplitude < referenceAmplitude * 0.5f && frequency > 1.5f)
         {
+            Debug.Log("État de respiration : " + "essoufflement");
             return "essoufflement";
         }
-        else if (amplitude >= vci && amplitude <= vri && frequency <= 1.2f)
+        else if (batchAmplitude > referenceAmplitude * 1.2f && frequency <= 1.2f)
         {
+            Debug.Log("État de respiration : " + "effort maîtrisé");
             return "effort maîtrisé";
         }
         else
         {
+            Debug.Log("État de respiration : " + "normal");
             return "normal";
         }
     }
+
 
     // Calcul de l'amplitude (différence entre pics et creux)
     float CalculateAmplitude(List<int> batch)
