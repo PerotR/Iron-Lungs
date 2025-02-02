@@ -7,6 +7,7 @@ public class TargetSpawner : MonoBehaviour
     public GameObject civilianPrefab; // Prefab pour les civils (type "Civilian")
     public float spawnHeight = 1.5f;  // Hauteur où les cibles apparaissent
     public int numberOfEntities = 150; // Nombre total d'entités à générer
+    public int numberOfTargets = 5;  // Nombre de cibles à générer
 
     private List<Transform> arenaTransforms = new List<Transform>();
     private float entityRadius;       // Rayon des entités (taille pour éviter les débordements)
@@ -40,6 +41,9 @@ public class TargetSpawner : MonoBehaviour
             return;
         }
 
+        // Calculer le nombre de civils à spawn
+        int numberOfCivilians = numberOfEntities - numberOfTargets;
+
         for (int i = 0; i < numberOfEntities; i++)
         {
             // Sélectionner une arène au hasard
@@ -49,8 +53,8 @@ public class TargetSpawner : MonoBehaviour
             float radiusX, radiusZ;
             CalculateArenaDimensions(selectedArena, out radiusX, out radiusZ);
 
-            // Déterminer si on spawn une cible ou un civil (90% Civilian, 10% Target)
-            GameObject prefabToSpawn = Random.value < 0.9f ? civilianPrefab : targetPrefab;
+            // Déterminer si on spawn une cible ou un civil
+            GameObject prefabToSpawn = (i < numberOfTargets) ? targetPrefab : civilianPrefab;
 
             // Obtenir une position aléatoire dans l'ellipse de l'arène sélectionnée
             Vector3 entityPosition = GetRandomPositionInEllipse(selectedArena.position, radiusX, radiusZ, spawnHeight);
