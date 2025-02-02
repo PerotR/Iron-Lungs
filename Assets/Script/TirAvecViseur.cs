@@ -16,6 +16,7 @@ public class TirAvecViseur : MonoBehaviour
     private bool isZoomed = false;  // Indique si le zoom est activé
 
     public AudioSource audioSource;
+    public AudioClip shootingSound;
     public AudioClip targetSound;
     public AudioClip civilianSound;
 
@@ -113,6 +114,10 @@ public class TirAvecViseur : MonoBehaviour
         Ray ray = cameraPrincipale.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
         RaycastHit hit;
 
+        
+        audioSource.PlayOneShot(shootingSound, 0.5f);
+        
+
         if (Physics.Raycast(ray, out hit, distanceRaycast))
         {
             GameObject hitObject = hit.collider.transform.root.gameObject;
@@ -121,7 +126,7 @@ public class TirAvecViseur : MonoBehaviour
             {
                 if (targetSound != null && audioSource != null)
                 {
-                    audioSource.PlayOneShot(targetSound);
+                    audioSource.PlayOneShot(targetSound, 0.7f);
                 }
                 Destroy(hitObject);
                 score++;
@@ -137,7 +142,8 @@ public class TirAvecViseur : MonoBehaviour
             {
                 if (civilianSound != null && audioSource != null)
                 {
-                    audioSource.PlayOneShot(civilianSound);
+                    audioSource.PlayOneShot(civilianSound, 2f);
+                    //audioSource.PlayDelayed(1f);
                 }
                 Destroy(hitObject);
                 civilianHits++;
