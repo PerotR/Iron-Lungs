@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 2693a75b9cc71fb4bae0674a2e512e59, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: dfd5fe4561034804291bb92fffe808d9, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
+  m_Sun: {fileID: 1563568480}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -156,7 +156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -20.3, y: 294.8}
+  m_AnchoredPosition: {x: -20.3, y: 248}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &94794835
@@ -3736,6 +3736,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceRaycast: 400
   maxCivilianHits: 3
+  size: 5
 --- !u!114 &1229808103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4087,6 +4088,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   filePathTo: Assets/RespirationData/calibration_aans_respiration_longue.txt
+  calibrageVCFilePath: Assets/RespirationData/calibrage_VC.txt
+  calibrageVRFilePath: Assets/RespirationData/calibrage_VR.txt
+  VCI: -1
+  VCE: -1
+  VRI: -1
+  VRE: -1
   graphImage: {fileID: 1108276641}
   textureWidth: 500
   textureHeight: 300
@@ -4476,6 +4483,7 @@ GameObject:
   - component: {fileID: 1563568481}
   - component: {fileID: 1563568480}
   - component: {fileID: 1563568482}
+  - component: {fileID: 1563568483}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -4495,7 +4503,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4553,13 +4561,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1563568479}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24732056, y: 0.7349077, z: -0.34269196, w: 0.5303824}
-  m_LocalPosition: {x: 2.2812276, y: 3, z: 0.66903377}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.70124257, y: -0.21203068, z: 0.114782505, w: 0.67091495}
+  m_LocalPosition: {x: 294, y: -295, z: -175}
+  m_LocalScale: {x: 10.1294, y: 9.4598, z: 4.4816}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: 108.364, z: 0}
+  m_LocalEulerAnglesHint: {x: 81.739, y: -120.717, z: -93.924}
 --- !u!114 &1563568482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4583,6 +4591,18 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &1563568483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1563568479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f4d919fa9931f546ab2a90a8384e847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1600294754
 GameObject:
   m_ObjectHideFlags: 0

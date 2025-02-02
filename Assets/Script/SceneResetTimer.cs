@@ -32,7 +32,7 @@ public class SceneResetTimer : MonoBehaviour
             if (timer <= 0)
             {
                 // Réinitialiser la scène
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene("Menu");
             }
         }
     }

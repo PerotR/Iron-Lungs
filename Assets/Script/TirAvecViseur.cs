@@ -7,7 +7,9 @@ public class TirAvecViseur : MonoBehaviour
     private Camera cameraPrincipale;     // Caméra utilisée pour viser
     private int score = 0;               // Score du joueur
     private int civilianHits = 0;        // Nombre de civils touchés
-    public int maxCivilianHits = 3; // Nombre maximum de civils touchés avant reset
+    public int maxCivilianHits = 3;      // Nombre maximum de civils touchés avant reset
+
+    public float size = 5f; 
 
     private void Start()
     {
@@ -26,7 +28,6 @@ public class TirAvecViseur : MonoBehaviour
     private void OnGUI()
     {
         // Afficher le viseur (un point rouge au centre)
-        float size = 10f; // Taille du point
         float xMin = (Screen.width / 2) - (size / 2);
         float yMin = (Screen.height / 2) - (size / 2);
         GUI.color = Color.red;
@@ -34,12 +35,23 @@ public class TirAvecViseur : MonoBehaviour
 
         // Afficher le score en haut de l'écran
         GUI.color = Color.white;
-        GUI.Label(new Rect(10, 10, 200, 50), "Score : " + score, new GUIStyle()
+        GUI.Label(new Rect(10, 10, 200, 50), "Bonnes cibles: " + score, new GUIStyle()
         {
-            fontSize = 30,
+            fontSize = 20,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = Color.yellow }
+            normal = { textColor = Color.green }
         });
+
+        // Afficher le nombre de mauvaises cibles touchées
+
+        GUI.color = Color.red;
+        GUI.Label(new Rect(10, 50, 300, 50), "Mauvaises cibles " + civilianHits + "/" + maxCivilianHits, new GUIStyle()
+        {
+            fontSize = 20,
+            fontStyle = FontStyle.Bold,
+            normal = { textColor = Color.red }
+        });
+
     }
 
     private void Update()
@@ -61,38 +73,25 @@ public class TirAvecViseur : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, distanceRaycast))
         {
-            //Debug.Log("Objet touché : " + hit.collider.name);
-
-            // Vérifier si l'objet touché est une cible
             GameObject hitObject = hit.collider.transform.root.gameObject; // Récupérer l'objet parent
 
             if (hitObject.CompareTag("Target"))
             {
                 Destroy(hitObject); // Détruire l'objet parent
                 score++; // Augmenter le score de 1
-                //Debug.Log("Cible détruite ! Score : " + score);
             }
             else if (hitObject.CompareTag("Civilian"))
             {
                 Destroy(hitObject); // Détruire l'objet parent
-                civilianHits++;
-                //Debug.Log("Civilian détruit ! Total : " + civilianHits);
-                
+                civilianHits++; // Augmenter le compteur des erreurs
+
                 // Vérifier si le nombre maximum de civils touchés est atteint
-                if (civilianHits > maxCivilianHits)
+                if (civilianHits >= maxCivilianHits)
                 {
-                    Debug.Log("Trop de civils touchés ! Redémarrage du jeu...");
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                    Debug.Log("Trop de civils touchés ! Retour au menu...");
+                    SceneManager.LoadScene("Menu");
                 }
             }
-            else
-            {
-                //Debug.Log("L'objet touché n'est ni une Target ni un Civilian.");
-            }
-        }
-        else
-        {
-            //Debug.Log("Aucune cible touchée.");
         }
     }
 }
