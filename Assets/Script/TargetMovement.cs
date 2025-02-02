@@ -2,10 +2,15 @@ using UnityEngine;
 
 public class TargetMovement : MonoBehaviour
 {
-    public float speed = 5f;               // Vitesse de déplacement
+    public float speed = 5f;               // Vitesse de déplacement initiale
+    public float accelerationFactor = 1.2f; // Facteur d'accélération
+    public float accelerationInterval = 3f; // Intervalle en secondes entre chaque accélération
     public Vector3 movementDirection;     // Direction de déplacement
+
     private Rigidbody rb;
     public float raycastDistance = 1f;   // Distance du raycast pour détecter les obstacles
+
+    private float accelerationTimer;
 
     private void Start()
     {
@@ -20,10 +25,15 @@ public class TargetMovement : MonoBehaviour
 
         // Générer une direction aléatoire pour le mouvement, uniquement dans le plan XZ
         movementDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+
+        accelerationTimer = accelerationInterval;
     }
 
     private void FixedUpdate()
     {
+        // Gestion de l'accélération
+        HandleAcceleration();
+
         // Vérifier s'il y a un obstacle devant avec un Raycast
         if (!Physics.Raycast(transform.position, movementDirection, raycastDistance))
         {
@@ -34,6 +44,19 @@ public class TargetMovement : MonoBehaviour
         {
             // Changer la direction si un obstacle est détecté
             movementDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+        }
+    }
+
+    private void HandleAcceleration()
+    {
+        accelerationTimer -= Time.deltaTime;
+
+        if (accelerationTimer <= 0f)
+        {
+            speed *= accelerationFactor; // Augmenter la vitesse
+            accelerationTimer = accelerationInterval; // Réinitialiser le timer
+
+            //Debug.Log($"Nouvelle vitesse : {speed}");
         }
     }
 

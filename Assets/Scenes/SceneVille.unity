@@ -387,9 +387,9 @@ GameObject:
   - component: {fileID: 113793333}
   - component: {fileID: 113793332}
   - component: {fileID: 113793331}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: mur
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1275,9 +1275,9 @@ GameObject:
   - component: {fileID: 443497814}
   - component: {fileID: 443497813}
   - component: {fileID: 443497812}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: mur (3)
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2099,9 +2099,9 @@ GameObject:
   - component: {fileID: 731983494}
   - component: {fileID: 731983493}
   - component: {fileID: 731983492}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: mur (2)
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3751,7 +3751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   "sensibilit\xE9Souris": 5
   rotationLimiteVerticale: 60
-  rotationLimiteHorizontale: 145
+  rotationLimiteHorizontale: 160
 --- !u!4 &1237869650 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4370792754970456, guid: 1e198ff9400b5064c816d8f779eff296,
@@ -5096,7 +5096,7 @@ MonoBehaviour:
   civilianPrefab: {fileID: 8387372776133497661, guid: 24e887960b7812f469e9c0560a589c7e,
     type: 3}
   spawnHeight: 1.5
-  numberOfEntities: 100
+  numberOfEntities: 150
 --- !u!4 &1696191155
 Transform:
   m_ObjectHideFlags: 0
@@ -5124,7 +5124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3331254453ce115449430a65f5446364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: 30
+  timer: 45
   isTimerActive: 1
   timerText: {fileID: 94794835}
 --- !u!1001 &1785127397
@@ -5396,9 +5396,9 @@ GameObject:
   - component: {fileID: 1859571413}
   - component: {fileID: 1859571412}
   - component: {fileID: 1859571411}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: mur (1)
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

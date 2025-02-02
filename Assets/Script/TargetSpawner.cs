@@ -6,7 +6,7 @@ public class TargetSpawner : MonoBehaviour
     public GameObject targetPrefab;   // Prefab pour les cibles (type "Target")
     public GameObject civilianPrefab; // Prefab pour les civils (type "Civilian")
     public float spawnHeight = 1.5f;  // Hauteur où les cibles apparaissent
-    public int numberOfEntities = 100; // Nombre total d'entités à générer
+    public int numberOfEntities = 150; // Nombre total d'entités à générer
 
     private List<Transform> arenaTransforms = new List<Transform>();
     private float entityRadius;       // Rayon des entités (taille pour éviter les débordements)
