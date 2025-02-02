@@ -192,7 +192,7 @@ public class RespirationInterpreter : MonoBehaviour
         switch (respirationState)
         {
             case "apnee": return 0.1f;
-            case "essoufflement": return 3.5f;
+            case "essoufflement": return 4f;
             case "effort maîtrisé": return 1f;
             case "normal": return 2f;
             default: return 0.0f;
