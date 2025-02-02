@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class RespirationDataReader : MonoBehaviour
 {
-    private string filePathTo = "Assets/RespirationData/run_simu.txt";
+    //private string filePathTo = "Assets/RespirationData/run_simu.txt";
+    private string filePathTo = "Assets/RespirationData/run_simu_2.txt";
     private List<int> respirationData = new List<int>();
 
     // Fichiers de calibration

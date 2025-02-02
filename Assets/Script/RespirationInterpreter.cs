@@ -118,7 +118,7 @@ public class RespirationInterpreter : MonoBehaviour
             Debug.Log("État de respiration : " + "apnee");
             return "apnee";
         }
-        else if (batchAmplitude < referenceAmplitude * 0.5f && frequency > 1.5f)
+        else if (frequency > 0.1f)
         {
             Debug.Log("État de respiration : " + "essoufflement");
             return "essoufflement";
