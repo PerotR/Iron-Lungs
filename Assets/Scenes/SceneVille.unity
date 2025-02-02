@@ -5707,7 +5707,7 @@ MonoBehaviour:
   isTimerActive: 1
   timerText: {fileID: 94794835}
   timerAudioSource: {fileID: 1696191157}
-  timerSound: {fileID: 8300000, guid: 711b597c0237bd54a8e466ea93c56086, type: 3}
+  timerSound: {fileID: 8300000, guid: 08a686b9c11928d4d9d3420bfe3ec75e, type: 3}
 --- !u!82 &1696191157
 AudioSource:
   m_ObjectHideFlags: 0

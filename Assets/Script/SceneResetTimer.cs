@@ -12,6 +12,12 @@ public class SceneResetTimer : MonoBehaviour
     public AudioClip timerSound;  // Le son à jouer dans les 5 dernières secondes
     private bool hasSoundPlayed = false;  // Pour s'assurer que le son ne soit joué qu'une fois
 
+    private float clockSound = 0.5f;  // Volume du son de l'horloge
+
+    private float soundTimer = 1f;  // Temps entre chaque son (1 seconde)
+    private float soundCooldown = 1f;  // Compteur pour contrôler le son
+
+
     void Start()
     {
         // Vérifie si le Text est bien assigné, sinon log une erreur
@@ -35,14 +41,15 @@ public class SceneResetTimer : MonoBehaviour
             timer -= Time.deltaTime;
 
             // Afficher le timer dans le UI Text
-            timerText.text = "Temps restant : " + Mathf.Ceil(timer).ToString();  // Affiche le timer avec un arrondi
+            timerText.text = "Temps restant : " + Mathf.Ceil(timer).ToString();
 
-            // Vérifie si nous sommes dans les 5 dernières secondes du timer
-            if (timer <= 6f && !hasSoundPlayed)
+            // Jouer le son une fois par seconde
+            soundCooldown -= Time.deltaTime;
+            if (soundCooldown <= 0f)
             {
-                // Jouer le son
-                timerAudioSource.PlayOneShot(timerSound);
-                hasSoundPlayed = true;  // Empêche de rejouer le son plusieurs fois
+                timerAudioSource.PlayOneShot(timerSound, clockSound);
+                clockSound+=0.5f;  // Augmente le volume du son à chaque itération
+                soundCooldown = soundTimer;  // Réinitialise le compteur
             }
 
             // Si le timer atteint 0, reset la scène
@@ -53,4 +60,5 @@ public class SceneResetTimer : MonoBehaviour
             }
         }
     }
+
 }
