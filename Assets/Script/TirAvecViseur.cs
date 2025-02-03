@@ -1,32 +1,43 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TirAvecViseur : MonoBehaviour
 {
-    public float distanceRaycast = 100f; 
-    private Camera cameraPrincipale;     
-    private int score = 0;               
-    private int civilianHits = 0;        
-    public int maxCivilianHits = 3;      
+    public float distanceRaycast = 100f;
+    private Camera cameraPrincipale;
+    private int score = 0;
+    private int civilianHits = 0;
+    public int maxCivilianHits = 3;
 
-    public float size = 5f; 
+    public float size = 5f;
 
-    private float fovNormal = 60f;  // FOV normal de la caméra
-    private float fovZoom = 30f;    // FOV réduit pour le zoom
-    private bool isZoomed = false;  // Indique si le zoom est activé
+    private float fovNormal = 60f; // FOV normal de la caméra
+    private float fovZoom = 30f;   // FOV réduit pour le zoom
+    private bool isZoomed = false; // Indique si le zoom est activé
 
     public AudioSource audioSource;
     public AudioClip shootingSound;
     public AudioClip targetSound;
     public AudioClip civilianSound;
 
-    public int totalTargets = 10;  // Nombre total de cibles à toucher
-    private int remainingTargets;  // Nombre de cibles restantes
+    public int totalTargets = 10; // Nombre total de cibles à toucher
+    private int remainingTargets; // Nombre de cibles restantes
 
     private bool gameOver = false; // Indique si la partie est terminée
 
-    private float endGameDelay = 2f;  // Délai avant de retourner au menu
+    private float endGameDelay = 2f; // Délai avant de retourner au menu
     private float endGameTimer = 0f; // Timer pour le délai
+
+    public Font fontcustom; // Police pour le score
+
+    public Texture2D customViseurTexture;
+    public float sizeViseur = 50f;
+
+    // Références aux objets TextMeshPro pour afficher les informations
+    public Text scoreText;
+    public Text civilianHitsText;
+    public Text gameOverText;
 
     private void Start()
     {
@@ -39,7 +50,7 @@ public class TirAvecViseur : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        remainingTargets = totalTargets;  // Initialiser le nombre de cibles restantes
+        remainingTargets = totalTargets; // Initialiser le nombre de cibles restantes
     }
 
     private void Update()
@@ -66,45 +77,26 @@ public class TirAvecViseur : MonoBehaviour
                 SceneManager.LoadScene("Menu");
             }
         }
-    }
 
-    private void OnGUI()
-    {
-        // Afficher le viseur (un point rouge au centre)
-        float xMin = (Screen.width / 2) - (size / 2);
-        float yMin = (Screen.height / 2) - (size / 2);
-        GUI.color = Color.red;
-        GUI.DrawTexture(new Rect(xMin, yMin, size, size), Texture2D.whiteTexture);
-
-        // Afficher le score en haut de l'écran
-        GUI.color = Color.white;
-        GUI.Label(new Rect(10, 10, 200, 50), "Bonnes cibles: " + score, new GUIStyle()
-        {
-            fontSize = 20,
-            fontStyle = FontStyle.Bold,
-            normal = { textColor = Color.green }
-        });
-
-        // Afficher le nombre de mauvaises cibles touchées
-        GUI.color = Color.red;
-        GUI.Label(new Rect(10, 50, 300, 50), "Mauvaises cibles " + civilianHits + "/" + maxCivilianHits, new GUIStyle()
-        {
-            fontSize = 20,
-            fontStyle = FontStyle.Bold,
-            normal = { textColor = Color.red }
-        });
+        // Mettre à jour le texte à chaque frame
+        scoreText.text = "Bonnes cibles: " + score + "/" + totalTargets;
+        civilianHitsText.text = "Mauvaises cibles: " + civilianHits + "/" + maxCivilianHits;
 
         // Si le jeu est terminé, afficher le message
         if (gameOver)
         {
-            GUI.color = Color.white;
-            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 50), "Toutes les cibles sont éliminées !", new GUIStyle()
-            {
-                fontSize = 30,
-                fontStyle = FontStyle.Bold,
-                normal = { textColor = Color.green }
-            });
+            gameOverText.text = "Toutes les cibles sont eliminees";
         }
+    }
+
+    private void OnGUI()
+    {
+        // Calculer la position du centre de l'écran
+        float xMin = (Screen.width / 2) - (sizeViseur / 2);
+        float yMin = (Screen.height / 2) - (sizeViseur / 2);
+
+        // Afficher la texture du viseur
+        GUI.DrawTexture(new Rect(xMin, yMin, sizeViseur, sizeViseur), customViseurTexture);
     }
 
     private void Tirer()
@@ -114,9 +106,7 @@ public class TirAvecViseur : MonoBehaviour
         Ray ray = cameraPrincipale.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
         RaycastHit hit;
 
-        
         audioSource.PlayOneShot(shootingSound, 0.5f);
-        
 
         if (Physics.Raycast(ray, out hit, distanceRaycast))
         {
@@ -130,12 +120,12 @@ public class TirAvecViseur : MonoBehaviour
                 }
                 Destroy(hitObject);
                 score++;
-                remainingTargets--;  // Réduire le nombre de cibles restantes
+                remainingTargets--; // Réduire le nombre de cibles restantes
 
                 // Si toutes les cibles ont été touchées
                 if (remainingTargets <= 0)
                 {
-                    gameOver = true;  // La partie est terminée
+                    gameOver = true; // La partie est terminée
                 }
             }
             else if (hitObject.CompareTag("Civilian"))
@@ -143,7 +133,6 @@ public class TirAvecViseur : MonoBehaviour
                 if (civilianSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(civilianSound, 2f);
-                    //audioSource.PlayDelayed(1f);
                 }
                 Destroy(hitObject);
                 civilianHits++;
