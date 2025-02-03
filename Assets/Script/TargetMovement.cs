@@ -33,7 +33,7 @@ public class TargetMovement : MonoBehaviour
 
         accelerationTimer = accelerationInterval;
         originalSpeed = speed;
-        tirAvecViseur = getComponent<TirAvecViseur>();
+        //tirAvecViseur = getComponent<TirAvecViseur>();
     }
 
     private void FixedUpdate()
