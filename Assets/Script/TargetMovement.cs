@@ -3,10 +3,11 @@ using UnityEngine;
 public class TargetMovement : MonoBehaviour
 {
     public float speed = 5f;               // Vitesse de déplacement initiale
-    public float accelerationFactor = 1.2f; // Facteur d'accélération
+    //public float accelerationFactor = 1.2f; // Facteur d'accélération
+    public float accelerationFactor = 1f;
     public float accelerationInterval = 3f; // Intervalle en secondes entre chaque accélération
     public Vector3 movementDirection;     // Direction de déplacement
-
+    private TirAvecViseur tirAvecViseur;
     private Rigidbody rb;
     public float raycastDistance = 1f;   // Distance du raycast pour détecter les obstacles
 
@@ -32,6 +33,7 @@ public class TargetMovement : MonoBehaviour
 
         accelerationTimer = accelerationInterval;
         originalSpeed = speed;
+        //tirAvecViseur = getComponent<TirAvecViseur>();
     }
 
     private void FixedUpdate()
@@ -76,6 +78,7 @@ public class TargetMovement : MonoBehaviour
     {
         if (!isSlowMotionActive)
         {
+            //tirAvecViseur.playSlowMo();
             isSlowMotionActive = true;
             slowMotionTimer = 0f;
             speed = 1f; // Réduire la vitesse de moitié

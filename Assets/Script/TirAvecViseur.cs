@@ -20,6 +20,7 @@ public class TirAvecViseur : MonoBehaviour
     public AudioClip shootingSound;
     public AudioClip targetSound;
     public AudioClip civilianSound;
+    public AudioClip slowmoSound;
 
     public int totalTargets = 10; // Nombre total de cibles à toucher
     private int remainingTargets; // Nombre de cibles restantes
@@ -144,5 +145,10 @@ public class TirAvecViseur : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void playSlowMo()
+    {
+        audioSource.PlayOneShot(slowmoSound);
     }
 }

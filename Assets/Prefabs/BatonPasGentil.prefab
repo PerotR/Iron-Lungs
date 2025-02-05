@@ -588,7 +588,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  accelerationFactor: 1.1
+  accelerationInterval: 3
   movementDirection: {x: 0, y: 0, z: 0}
+  raycastDistance: 1
 --- !u!65 &6135871493169058638
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -636,7 +639,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!1 &8504099252877522224
 GameObject:
   m_ObjectHideFlags: 0
