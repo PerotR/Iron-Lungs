@@ -12,7 +12,7 @@ public class TirAvecViseur : MonoBehaviour
 
     public float size = 5f;
 
-    private float fovNormal = 60f; // FOV normal de la caméra
+    private float fovNormal = 100f; // FOV normal de la caméra
     private float fovZoom = 30f;   // FOV réduit pour le zoom
     private bool isZoomed = false; // Indique si le zoom est activé
 

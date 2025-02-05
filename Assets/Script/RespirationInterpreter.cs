@@ -23,6 +23,7 @@ public class RespirationInterpreter : MonoBehaviour
     public RectTransform tracker; // Flèche ou indicateur visuel
     public RectTransform graphContainer; // Conteneur du graphique
     public RawImage graphImage;
+    public Text feedbackText;
 
     void Start()
     {
@@ -117,21 +118,25 @@ public class RespirationInterpreter : MonoBehaviour
         {
             Debug.Log("État de respiration : " + "apnee");
             TriggerApneaEffect();
+            feedbackText.text = "Entree en apnee";
             return "apnee";
         }
         else if (frequency > 0.1f)
         {
             Debug.Log("État de respiration : " + "essoufflement");
+            feedbackText.text = "Vous etes essouffle, ralentissez votre respiration";
             return "essoufflement";
         }
         else if (batchAmplitude > referenceAmplitude * 1.2f && frequency <= 1.2f)
         {
             Debug.Log("État de respiration : " + "effort maîtrisé");
+            feedbackText.text = "Bon rythme, continuez comme ca";
             return "effort maîtrisé";
         }
         else
         {
             Debug.Log("État de respiration : " + "normal");
+            feedbackText.text = "Respiration normale";
             return "normal";
         }
     }
