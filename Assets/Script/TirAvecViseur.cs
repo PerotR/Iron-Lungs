@@ -33,12 +33,15 @@ public class TirAvecViseur : MonoBehaviour
     public Font fontcustom; // Police pour le score
 
     public Texture2D customViseurTexture;
+    public Texture2D customViseurTextureOnzoom;
     public float sizeViseur = 50f;
 
     // Références aux objets TextMeshPro pour afficher les informations
     public Text scoreText;
     public Text civilianHitsText;
     public Text gameOverText;
+    public GameObject scopeQuad;
+    public GameObject Fusil;
 
     private void Start()
     {
@@ -50,6 +53,9 @@ public class TirAvecViseur : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        scopeQuad.SetActive(false);
+        Fusil.SetActive(true);
+
 
         remainingTargets = totalTargets; // Initialiser le nombre de cibles restantes
     }
@@ -61,6 +67,8 @@ public class TirAvecViseur : MonoBehaviour
         {
             isZoomed = !isZoomed; // Alterne entre zoomé et non zoomé
             cameraPrincipale.fieldOfView = isZoomed ? fovZoom : fovNormal;
+            scopeQuad.SetActive(isZoomed); // Affiche le réticule de visée
+            Fusil.SetActive(!isZoomed); // Cache le fusil
         }
 
         // Tir avec le clic gauche
@@ -95,9 +103,15 @@ public class TirAvecViseur : MonoBehaviour
         // Calculer la position du centre de l'écran
         float xMin = (Screen.width / 2) - (sizeViseur / 2);
         float yMin = (Screen.height / 2) - (sizeViseur / 2);
+        if (isZoomed)
+        {
+            GUI.DrawTexture(new Rect(xMin, yMin, sizeViseur, sizeViseur), customViseurTextureOnzoom);
+        }
+        else{
+            GUI.DrawTexture(new Rect(xMin, yMin, sizeViseur, sizeViseur), customViseurTexture);
+        }
 
-        // Afficher la texture du viseur
-        GUI.DrawTexture(new Rect(xMin, yMin, sizeViseur, sizeViseur), customViseurTexture);
+        
     }
 
     private void Tirer()
